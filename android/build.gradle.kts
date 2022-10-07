@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.succlz123"
-version = "1.0.3"
+version = "1.0.5"
 
 repositories {
     mavenCentral()
@@ -25,12 +25,12 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "org.succlz123.app.acfun"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 30
-        versionCode = 3
-        versionName = "1.0.3"
+        versionCode = 5
+        versionName = "1.0.5"
 
-//        resourceConfigurations += ["en", "zh"]
+        resourceConfigurations += mutableSetOf("en", "zh")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -65,6 +65,7 @@ android {
             isDebuggable = false
             ndk {
                 abiFilters += "arm64-v8a"
+                abiFilters += "armeabi-v7a"
             }
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.txt")

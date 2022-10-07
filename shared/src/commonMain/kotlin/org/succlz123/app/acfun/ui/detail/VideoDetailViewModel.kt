@@ -1,8 +1,9 @@
 package org.succlz123.app.acfun.ui.detail
 
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.focus.FocusRequester
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import org.jsoup.nodes.Element
@@ -12,6 +13,7 @@ import org.succlz123.app.acfun.api.bean.AcContent
 import org.succlz123.app.acfun.api.bean.PlayList
 import org.succlz123.app.acfun.api.bean.VideoContent
 import org.succlz123.app.acfun.danmaku.DanmakuBean
+import org.succlz123.lib.focus.FocusNode
 import org.succlz123.lib.network.HttpX
 import org.succlz123.lib.result.screenResultDataNone
 import org.succlz123.lib.screen.result.ScreenResult
@@ -19,7 +21,7 @@ import org.succlz123.lib.screen.viewmodel.ScreenViewModel
 
 class VideoDetailViewModel : ScreenViewModel() {
 
-    val videoContentState = mutableStateOf<ScreenResult<VideoContent>>(ScreenResult.Uninitialized)
+    val videoContentState = MutableStateFlow<ScreenResult<VideoContent>>(ScreenResult.Uninitialized)
 
     var playVideoContentLoadingState: Boolean = false
 
@@ -30,6 +32,12 @@ class VideoDetailViewModel : ScreenViewModel() {
     val downloadVideoContentEvent = MutableSharedFlow<ScreenResult<VideoContent>>()
 
     private var currentPos = 1
+
+    val userSpaceFocusParent = FocusRequester()
+
+    val episodeFocusParent = FocusRequester()
+
+    var currentFocusNode = MutableStateFlow(FocusNode(tag = "Episode"))
 
     override fun onCleared() {
         super.onCleared()

@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.succlz123.app.acfun.theme.ColorResource
 import org.succlz123.lib.click.noRippleClickable
 import org.succlz123.lib.screen.LocalScreenNavigator
@@ -28,12 +30,51 @@ fun LoadingView() {
 }
 
 @Composable
+fun LoadingFailView(modifier: Modifier = Modifier, cancelClick: () -> Unit, okClick: () -> Unit) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "数据加载失败!", fontSize = 26.sp, fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(48.dp))
+        Row {
+            Button(colors = outlinedButtonColors(
+                backgroundColor = ColorResource.acRed,
+                contentColor = Color.White,
+                disabledContentColor = Color.Transparent
+            ), contentPadding = PaddingValues(
+                start = 16.dp, top = 6.dp, end = 16.dp, bottom = 6.dp
+            ), onClick = {
+                cancelClick.invoke()
+            }) {
+                Text(text = "退出", fontSize = 16.sp)
+            }
+            Spacer(modifier = Modifier.width(32.dp))
+            Button(colors = outlinedButtonColors(
+                backgroundColor = Color.Black, contentColor = Color.White, disabledContentColor = Color.Transparent
+            ), contentPadding = PaddingValues(
+                start = 16.dp, top = 6.dp, end = 16.dp, bottom = 6.dp
+            ), onClick = {
+                okClick.invoke()
+            }) {
+                Text(
+                    text = "重试", fontSize = 16.sp
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun AcRefreshButton(modifier: Modifier, onClick: () -> Unit) {
-    Card(modifier = modifier, backgroundColor = Color.White, elevation = 32.dp) {
+    Card(modifier = modifier, backgroundColor = Color.White, elevation = 12.dp) {
         Box(modifier = Modifier.padding(12.dp).noRippleClickable(onClick)) {
             Icon(
                 Icons.Sharp.Refresh,
-                modifier = Modifier.size(36.dp),
+                modifier = Modifier.size(36.dp).padding(2.dp),
                 contentDescription = "Refresh",
                 tint = ColorResource.acRed
             )
@@ -43,11 +84,11 @@ fun AcRefreshButton(modifier: Modifier, onClick: () -> Unit) {
 
 @Composable
 fun AcGo2TopButton(modifier: Modifier, onClick: () -> Unit) {
-    Card(modifier = modifier, backgroundColor = Color.White, elevation = 32.dp) {
+    Card(modifier = modifier, backgroundColor = Color.White, elevation = 12.dp) {
         Box(modifier = Modifier.padding(12.dp).noRippleClickable(onClick)) {
             Icon(
                 Icons.Sharp.KeyboardArrowUp,
-                modifier = Modifier.size(36.dp),
+                modifier = Modifier.size(36.dp).padding(2.dp),
                 contentDescription = "Go to top",
                 tint = ColorResource.acRed
             )
@@ -69,14 +110,15 @@ fun AcBackButton(modifier: Modifier = Modifier, tint: Color = Color.Black, onCli
 }
 
 @Composable
-fun AcDivider() {
-    Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(ColorResource.divider))
+fun AcDivider(modifier: Modifier = Modifier.fillMaxWidth()) {
+    Spacer(modifier = modifier.height(1.dp).background(ColorResource.divider))
 }
 
 @Composable
-fun AcButton(onClick: () -> Unit, content: @Composable () -> Unit) {
+fun AcButton(modifier: Modifier = Modifier, onClick: () -> Unit, content: @Composable () -> Unit) {
     Button(
-        colors = ButtonDefaults.outlinedButtonColors(
+        modifier = modifier,
+        colors = outlinedButtonColors(
             backgroundColor = ColorResource.acRed, contentColor = Color.White, disabledContentColor = Color.Transparent
         ), contentPadding = PaddingValues(
             start = 18.dp, top = 4.dp, end = 18.dp, bottom = 4.dp

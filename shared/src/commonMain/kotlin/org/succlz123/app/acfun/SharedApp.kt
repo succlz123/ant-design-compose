@@ -10,6 +10,7 @@ import org.succlz123.app.acfun.theme.AcFunTheme
 import org.succlz123.app.acfun.ui.area.AreaContentScreen
 import org.succlz123.app.acfun.ui.detail.VideoDetailScreen
 import org.succlz123.app.acfun.ui.live.LiveStreamPlayerScreen
+import org.succlz123.app.acfun.ui.login.LoginScreen
 import org.succlz123.app.acfun.ui.main.MainScreen
 import org.succlz123.app.acfun.ui.user.UserSpaceScreen
 import org.succlz123.app.acfun.ui.video.VideoPlayerScreen
@@ -23,6 +24,7 @@ object AppBuildConfig {
 }
 
 object Manifest {
+    const val LoginScreen = "LoginScreen"
     const val MainScreen = "MainScreen"
     const val VideoDetailScreen = "VideoDetailScreen"
     const val VideoPlayerScreen = "VideoPlayerScreen"
@@ -33,11 +35,14 @@ object Manifest {
 }
 
 @Composable
-fun SharedMainContent() {
+fun SharedApp() {
     val screenNavigator = rememberScreenNavigator()
     AcFunTheme {
         Box(modifier = Modifier.fillMaxSize()) {
-            ScreenHost(screenNavigator = screenNavigator, rootScreenName = Manifest.MainScreen) {
+            ScreenHost(screenNavigator = screenNavigator, rootScreenName = Manifest.LoginScreen) {
+                groupScreen(screenName = (Manifest.LoginScreen)) {
+                    LoginScreen()
+                }
                 groupScreen(screenName = (Manifest.MainScreen)) {
                     MainScreen()
                 }

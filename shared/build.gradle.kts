@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.succlz123"
-version = "1.0.3"
+version = "1.0.5"
 
 kotlin {
     android()
@@ -28,6 +28,7 @@ kotlin {
                 api(compose.material)
 
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
                 api("io.ktor:ktor-client-core:2.1.1")
 //                api("io.ktor:ktor-client-cio:2.1.1")
@@ -52,10 +53,9 @@ kotlin {
             dependencies {
                 api("androidx.appcompat:appcompat:1.5.1")
                 api("androidx.core:core-ktx:1.9.0")
-                api("androidx.window:window:1.1.0-alpha03")
 
                 api("io.coil-kt:coil-compose:2.2.1")
-                api("io.github.succlz123:compose-screen-android:0.0.2")
+                api("io.github.succlz123:compose-screen-android:0.0.3")
                 api("com.github.succlz123:HoHoPlayer:0.1.6")
             }
         }
@@ -66,7 +66,7 @@ kotlin {
         }
         val desktopMain by getting {
             dependencies {
-                api("io.github.succlz123:compose-screen-desktop:0.0.2")
+                api("io.github.succlz123:compose-screen-desktop:0.0.3")
                 api("io.github.succlz123:compose-imageloader-desktop:0.0.2")
 
                 api("uk.co.caprica:vlcj:4.7.3")
@@ -81,7 +81,7 @@ android {
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].assets.setSrcDirs(listOf("${project.rootDir}/shared/src/commonMain/resources"))
     defaultConfig {
-        minSdk = 24
+        minSdk = 21
         targetSdk = 30
     }
     compileOptions {
