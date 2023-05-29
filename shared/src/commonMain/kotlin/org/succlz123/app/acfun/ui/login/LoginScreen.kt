@@ -1,8 +1,6 @@
 package org.succlz123.app.acfun.ui.login
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,12 +11,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import kotlinx.collections.immutable.ImmutableCollection
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import org.succlz123.ant.component.button.*
-import org.succlz123.ant.component.checkbox.MacCheckbox
-import org.succlz123.ant.component.radio.AntRadioGroup
+import org.succlz123.ant.component.checkbox.AntCheckboxOption
+import org.succlz123.ant.component.checkbox.AntCheckboxSample
 import org.succlz123.ant.component.radio.AntRadioOption
+import org.succlz123.ant.component.radio.AntRadioSample
 import org.succlz123.ant.theme.MacTheme
 import org.succlz123.lib.screen.LocalScreenNavigator
 import org.succlz123.lib.screen.viewmodel.viewModel
@@ -134,11 +134,7 @@ fun AntExampleView() {
 
                 Text("Checkbox Component")
                 Spacer(Modifier.height(16.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    CheckboxWithLabel("Apple", checked = true, enabled = false)
-                    CheckboxWithLabel("Pear", checked = false)
-                    CheckboxWithLabel("Orange", checked = true)
-                }
+                CheckboxView()
                 Spacer(Modifier.height(16.dp))
             }
         }
@@ -149,16 +145,9 @@ fun AntExampleView() {
 @Composable
 private fun RadioGroupView() {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-//                    var radioList = remember {
-//                        mutableStateListOf(
-//                            AntRadioOption(value = "Radio"),
-//                            AntRadioOption(value = "And", enabled = false),
-//                            AntRadioOption(value = "Buttons", checked = true)
-//                        )
-//                    }
-        var radioList by remember {
+        val radioList: MutableState<ImmutableCollection<AntRadioOption>> = remember {
             mutableStateOf(
-                mutableListOf(
+                persistentListOf(
                     AntRadioOption(value = "Apple"),
                     AntRadioOption(value = "Pear", enabled = false),
                     AntRadioOption(value = "Orange", checked = true)
@@ -166,18 +155,16 @@ private fun RadioGroupView() {
             )
         }
         Row {
-            // stateful
-            AntRadioGroup(radioList)
+            AntRadioSample(radioList)
             Spacer(modifier = Modifier.width(16.dp))
-            // stateless
-            AntRadioGroup(radioList.toImmutableList(), onChange = { index, option ->
-                radioList = radioList.map { it.copy(checked = (it == option)) }.toMutableList()
+            AntRadioSample(radioList.value, onChange = { index, option ->
+                radioList.value = radioList.value.map { it.copy(checked = (it == option)) }.toImmutableList()
             })
         }
         AntPrimaryButton(onClick = {
-            radioList = radioList.map { it.copy(checked = !it.checked) }.toMutableList()
+            radioList.value = radioList.value.map { it.copy(checked = !it.checked) }.toImmutableList()
         }) {
-            Text("Toggle disabled")
+            Text("Toggle checked")
         }
     }
 }
@@ -207,37 +194,19 @@ private fun ButtonsView() {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun CheckboxWithLabel(
-    label: String,
-    checked: Boolean,
-    enabled: Boolean = true
-) {
-    var isChecked by remember { mutableStateOf(checked) }
-    val interactionSource = remember { MutableInteractionSource() }
-    Row(
-        Modifier.clickable(interactionSource = interactionSource, indication = null) {
-            if (!enabled) return@clickable
-            isChecked = !isChecked
-        },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        MacCheckbox(
-            isChecked,
-            { isChecked = it },
-            enabled = enabled,
-            interactionSource = interactionSource
-        )
-        Spacer(Modifier.width(6.dp))
-        Text(
-            label,
-            color = if (enabled) {
-                LocalTextStyle.current.color
-            } else {
-                LocalTextStyle.current.color.copy(alpha = ContentAlpha.disabled)
-            },
-            fontSize = 13.sp
-        )
+private fun CheckboxView() {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        val radioList: MutableState<ImmutableCollection<AntCheckboxOption>> = remember {
+            mutableStateOf(
+                persistentListOf(
+                    AntCheckboxOption(value = "Apple", checked = true),
+                    AntCheckboxOption(value = "Pear", enabled = true),
+                    AntCheckboxOption(value = "Watermelon", enabled = true),
+                    AntCheckboxOption(value = "Orange", checked = true, enabled = false)
+                )
+            )
+        }
+        AntCheckboxSample(radioList)
     }
 }

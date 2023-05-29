@@ -4,12 +4,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CheckboxColors
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,6 +19,8 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.succlz123.ant.theme.AntDisabledBackgroundColor
@@ -28,8 +28,46 @@ import org.succlz123.ant.theme.AntTheme
 
 val RadioTextSize = 13.sp
 val RadioSize = 16.dp
-private val DotRadius = 3.dp
-private val BorderStrokeWidth = 1.dp
+val DotRadius = 3.dp
+val BorderStrokeWidth = 1.dp
+
+data class AntRadioOption(
+    val value: String,
+    val checked: Boolean = false,
+    val enabled: Boolean = true,
+
+    val imgSize: Dp = RadioSize,
+    val textSize: TextUnit = RadioTextSize,
+    val textColor: @Composable () -> Color = {
+        LocalTextStyle.current.color
+    },
+    val textPaddingStart: Dp = 6.dp
+)
+
+@Composable
+fun AntRadioButtonWithLabel(
+    option: AntRadioOption,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource? = null
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        AntRadioButton(option.checked,
+            onClick = null,
+            enabled = option.enabled,
+            interactionSource = interactionSource ?: remember { MutableInteractionSource() })
+        Spacer(Modifier.width(option.textPaddingStart))
+        Text(
+            option.value, color = if (option.enabled) {
+                option.textColor.invoke()
+            } else {
+                option.textColor.invoke().copy(alpha = ContentAlpha.disabled)
+            }, fontSize = option.textSize
+        )
+    }
+}
 
 @Composable
 fun AntRadioButton(
@@ -43,28 +81,23 @@ fun AntRadioButton(
     val state = ToggleableState(selected)
     val backgroundColor = MaterialTheme.colors.surface
 
-    val selectableModifier =
-        if (onClick != null) {
-            Modifier.selectable(
-                selected = selected,
-                enabled = enabled,
-                role = Role.RadioButton,
-                interactionSource = interactionSource,
-                indication = if (enabled) LocalIndication.current else null, // Unfortunately necessary
-                onClick = onClick,
-            )
-        } else {
-            Modifier.indication(
-                interactionSource = interactionSource,
-                indication = if (enabled) LocalIndication.current else null,
-            )
-        }
+    val selectableModifier = if (onClick != null) {
+        Modifier.selectable(
+            selected = selected,
+            enabled = enabled,
+            role = Role.RadioButton,
+            interactionSource = interactionSource,
+            indication = if (enabled) LocalIndication.current else null, // Unfortunately necessary
+            onClick = onClick,
+        )
+    } else {
+        Modifier.indication(
+            interactionSource = interactionSource,
+            indication = if (enabled) LocalIndication.current else null,
+        )
+    }
     Canvas(
-        modifier
-            .requiredSize(RadioSize)
-            .clip(CircleShape)
-            .then(selectableModifier)
-            .wrapContentSize(Alignment.Center)
+        modifier.requiredSize(RadioSize).clip(CircleShape).then(selectableModifier).wrapContentSize(Alignment.Center)
     ) {
         val borderColor = colors.borderColor(enabled, state)
         val radioColor = colors.radioColor(enabled, state)
@@ -81,33 +114,23 @@ fun AntRadioButton(
 }
 
 private fun DrawScope.drawRadio(
-    backgroundColor: Color,
-    borderColor: Color,
-    radioColor: Color,
-    dotColor: Color,
-    showDot: Boolean
+    backgroundColor: Color, borderColor: Color, radioColor: Color, dotColor: Color, showDot: Boolean
 ) {
     val borderStrokeWidth = BorderStrokeWidth.toPx()
 
     // Background
     drawCircle(
-        color = backgroundColor,
-        radius = RadioSize.toPx() / 2,
-        style = Fill
+        color = backgroundColor, radius = RadioSize.toPx() / 2, style = Fill
     )
 
     // Filled radio button
     drawCircle(
-        color = radioColor,
-        radius = RadioSize.toPx() / 2,
-        style = Fill
+        color = radioColor, radius = RadioSize.toPx() / 2, style = Fill
     )
 
     // Border
     drawCircle(
-        color = borderColor,
-        radius = RadioSize.toPx() / 2 - borderStrokeWidth,
-        style = Stroke(borderStrokeWidth)
+        color = borderColor, radius = RadioSize.toPx() / 2 - borderStrokeWidth, style = Stroke(borderStrokeWidth)
     )
 
     // Inner dot
